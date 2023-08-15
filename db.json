@@ -1,0 +1,32 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "name": "book1",
+      "author": "author1",
+      "category": "drama",
+      "image": "media/one.jpg"
+    },
+    {
+      "id": 2,
+      "name": "book2",
+      "author": "author2",
+      "category": "horror",
+      "image": "media/two.jpg"
+    },
+    {
+      "id": 3,
+      "name": "book3",
+      "author": "author3",
+      "category": "horror",
+      "image": "media/three.jpg"
+    },
+    {
+      "id": 4,
+      "name": "book4",
+      "author": "author4",
+      "category": "drama",
+      "image": "media/four.jpg"
+    }
+  ]
+}

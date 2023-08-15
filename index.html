@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="display"></div><br>
+    <button onclick="firstBook()">first</button>
+    <button onclick="nextBook()">next</button>
+    <button onclick="prevBook()">Prev</button>
+    <button onclick="lastBook()">last</button><br>
+    <hr>
+    <input type="text" id="bookName" placeholder="Enter book name">
+    <input type="text" id="bookAuthor" placeholder="Enter book author">
+    <input type="text" id="bookCat" placeholder="Enter book category">
+    <input type="file" id="bookImg">
+    <br><br>
+
+    <button onclick="addBook()">add a book</button>
+    <button onclick="delBook()">delete a book</button><br><br>
+    <button onclick="resetData()">reset books</button>
+    <br>
+    <hr><br>
+    <button onclick="allBooks()"> all books</button>
+    <button onclick="allBooksBack()"> all books backwards</button>
+
+
+    <script>
+
+        let index = 0
+        let books = []
+        const MY_SERVER = "http://localhost:3000/books"
+
+        getData()
+        async function getData() {
+            books = await fetch(MY_SERVER).then(response => response.json()) //read - get
+            saveData(books)
+            updateDisplay()
+        }
+
+        async function resetData() {
+            books = await fetch(MY_SERVER).then(response => response.json()) //read - get
+            saveData(books)
+            index = 0
+            updateDisplay()
+        }
+
+        function saveData(arBooks) {
+            localStorage.setItem("books", arBooks);
+        }
+        function addBook() {
+            let name = document.getElementById('bookName').value;
+            let aut = document.getElementById('bookAuthor').value;
+            let cat = document.getElementById('bookCat').value;
+            let img = document.getElementById('bookImg').value;
+
+            if (name && aut && cat && img) {
+                books.push({
+                    name: name,
+                    author: aut,
+                    category: cat,
+                    image: img
+                });
+
+                document.getElementById('bookName').value = '';
+                document.getElementById('bookAuthor').value = '';
+                document.getElementById('bookCat').value = '';
+                document.getElementById('bookImg').value = '';
+
+                index = books.length - 1;
+                saveData(books)
+                updateDisplay();
+            } else {
+                console.log("Please enter valid book information");
+            }
+        }
+
+        function delBook() {
+            let name = document.getElementById('bookName').value;
+            let aut = document.getElementById('bookAuthor').value;
+            let cat = document.getElementById('bookCat').value;
+            let img = document.getElementById('bookImg').value;
+
+            if (name && aut && cat && img) {
+                for (let c = 0; c < books.length; c++) {
+                    let bName = books[c].name
+                    let bAut = books[c].author
+                    let bCat = books[c].category
+                    let bImg = books[c].image
+                    if (bName == name && bAut == aut && bCat == cat && bImg == img)
+                        books.splice(c, 1)
+                }
+
+                document.getElementById('bookName').value = '';
+                document.getElementById('bookAuthor').value = '';
+                document.getElementById('bookCat').value = '';
+                document.getElementById('bookImg').value = '';
+
+                index = books.length - 1;
+                saveData(books)
+                updateDisplay();
+            } else {
+                console.log("Please enter valid book information");
+            }
+        }
+
+
+        function updateDisplay() {//set display
+            display.innerHTML = `${index + 1}/${books.length} <br>
+            "${books[index % books.length].name}"<br>
+            a ${books[index % books.length].category} book by ${books[index % books.length].author}<br>
+            <img src="${books[index % books.length].image}" alt="bookimage"><br>`
+        }
+
+        function addToDisplay(c) { //add to display
+            display.innerHTML += `${c + 1}/${books.length} <br>
+            "${books[c % books.length].name}"<br>
+            a ${books[c % books.length].category} book by ${books[c % books.length].author}<br>
+            <img src="${books[c % books.length].image}" alt="bookimage"><br>`
+        }
+
+        function allBooks() {
+            display.innerHTML = ''
+            for (let i = 0; i < books.length; i++) {
+                addToDisplay(i)
+            }
+        }
+
+        function allBooksBack() {
+            display.innerHTML = ''
+            for (let i = books.length - 1; i >= 0; i--) {
+                addToDisplay(i)
+            }
+        }
+
+        function nextBook() {
+            index = ++index < books.length ? index++ : books.length - 1;
+            updateDisplay()
+        }
+
+        function prevBook() {
+            index = index > 0 ? --index : 0
+            updateDisplay()
+        }
+
+        function firstBook() {
+            index = 0
+            updateDisplay()
+        }
+
+        function lastBook() {
+            index = books.length - 1
+            updateDisplay()
+        }
+
+
+
+    </script>
+</body>
+
+</html>
