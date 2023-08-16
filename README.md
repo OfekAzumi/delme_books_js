@@ -1,3 +1,5 @@
+# server call
+    json-server --watch db.json
 # server url
     http://localhost:3000/books
 # book structure

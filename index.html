@@ -23,7 +23,7 @@
     <input type="text" id="bookName" placeholder="Enter book name">
     <input type="text" id="bookAuthor" placeholder="Enter book author">
     <input type="text" id="bookCat" placeholder="Enter book category">
-    <input type="file" id="bookImg">
+    <input type="file" id="bookImg" accept="image/*">
     <br><br>
 
     <button onclick="addBook()">add a book</button>
@@ -41,28 +41,34 @@
         let books = []
         const MY_SERVER = "http://localhost:3000/books"
 
-        getData()
+        getData() //if load from server
+        // loadData() //if load from localstorage in site opening
         async function getData() {
             books = await fetch(MY_SERVER).then(response => response.json()) //read - get
-            saveData(books)
+            saveData()
             updateDisplay()
         }
 
         async function resetData() {
             books = await fetch(MY_SERVER).then(response => response.json()) //read - get
-            saveData(books)
+            saveData()
             index = 0
             updateDisplay()
         }
 
-        function saveData(arBooks) {
-            localStorage.setItem("books", arBooks);
+        function saveData() {
+            localStorage.setItem("books", JSON.stringify(books));
+        }
+        function loadData() {
+            books = JSON.parse(localStorage.getItem("books"))
         }
         function addBook() {
-            let name = document.getElementById('bookName').value;
-            let aut = document.getElementById('bookAuthor').value;
-            let cat = document.getElementById('bookCat').value;
-            let img = document.getElementById('bookImg').value;
+            let name = document.getElementById("bookName").value;
+            let aut = document.getElementById("bookAuthor").value;
+            let cat = document.getElementById("bookCat").value;
+            // let img = document.getElementById("bookImg").value; //full path
+            let img = document.getElementById("bookImg").files[0].name; // only image name
+
 
             if (name && aut && cat && img) {
                 books.push({
@@ -78,7 +84,7 @@
                 document.getElementById('bookImg').value = '';
 
                 index = books.length - 1;
-                saveData(books)
+                saveData()
                 updateDisplay();
             } else {
                 console.log("Please enter valid book information");
@@ -107,7 +113,7 @@
                 document.getElementById('bookImg').value = '';
 
                 index = books.length - 1;
-                saveData(books)
+                saveData()
                 updateDisplay();
             } else {
                 console.log("Please enter valid book information");
